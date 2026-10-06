@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>Driving Theory Test Kit Growth Audit</title>
+<meta name="description" content="Five ideas to turn more Driving Theory Test Kit users into subscribers, each built into a clickable version of Driving Theory Test Kit's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#133d6a;      /* navy: "Unlock all questions", selected vehicle chip */
+  --b-primary-ink:#ffffff;
+  --b-bg:#f2f7ff;           /* home ground behind the cards */
+  --b-surface:#ffffff;      /* cards, answer rows */
+  --b-ink:#133d6a;          /* titles: "Choose your vehicle:", "Practise" */
+  --b-ink2:#415977;         /* card subtitles */
+  --b-line:#e5e7e9;         /* card borders, answer dividers */
+  --b-accent2:#f85108;      /* orange */
+  --b-orange:#f85108;       /* header orange */
+  --b-teal:#008883;         /* their teal banners */
+  --b-slate:#284c60;        /* question header + question text */
+  --b-blue:#1e67ab;         /* "MARK ONE ANSWER", next button */
+  --b-blue-lt:#d3eafe;      /* previous button */
+  --b-qbg:#e7f3ff;          /* question area */
+  --b-ok:#38c172;           /* correct (site palette) */
+  --b-bad:#e3342f;          /* wrong (site palette) */
+  --b-grad:none;
+  --b-radius:16px;
+  --b-pill:999px;
+  --b-font:'Nunito',-apple-system,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#133d6a;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#f85108;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(248,81,8,.32); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — RAC Driving Theory Test Kit. Colours only via var(--b-*), or white/black with alpha. */
+.r-body{flex:1;display:flex;flex-direction:column;padding:58px 20px 26px;gap:12px;position:relative;z-index:1;min-height:0}
+.r-bar{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.r-back{background:none;border:0;color:var(--b-ink);font:700 30px/1 var(--b-font);padding:0 4px 4px 0;cursor:pointer}
+.r-prog{flex:1;height:6px;border-radius:6px;background:var(--b-line);overflow:hidden}
+.r-prog i{display:block;height:100%;background:var(--b-orange);border-radius:6px}
+.r-h{font:800 27px/1.18 var(--b-font);color:var(--b-ink);margin:2px 0 0;letter-spacing:-.01em}
+.r-p{font:500 15.5px/1.45 var(--b-font);color:var(--b-ink2);margin:0}
+.r-kick{font:800 12px var(--b-font);letter-spacing:.08em;text-transform:uppercase;color:var(--b-orange);margin:0}
+.r-cta{margin-top:auto;width:100%;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:800 17px var(--b-font);padding:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;flex:none}
+.r-cta svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.r-fine{font:600 12.5px/1.4 var(--b-font);color:var(--b-ink2);text-align:center;margin:-2px 0 0}
+
+/* welcome — their home header: orange, logo badge */
+.r-hero{background:var(--b-orange);padding:96px 24px 92px;display:flex;flex-direction:column;align-items:center;gap:30px;position:relative;overflow:hidden;flex:none}
+.r-hero::after{content:"";position:absolute;left:-20%;right:-20%;bottom:-70px;height:110px;background:var(--b-teal);transform:rotate(-9deg)}
+.r-logo{width:272px;height:auto;position:relative;z-index:1}
+.r-tiles{display:flex;gap:10px;position:relative;z-index:1}
+.r-tiles img{width:68px;height:64px;border-radius:12px;background:var(--b-surface);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+.r-sheet{flex:1;background:var(--b-bg);border-radius:24px 24px 0 0;margin-top:-24px;padding:28px 22px 26px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:2}
+.r-stars{display:flex;align-items:center;gap:8px;font:700 14px var(--b-font);color:var(--b-ink);margin-top:2px}
+.r-stars i{font-style:normal;color:var(--b-orange);letter-spacing:1px;font-size:15px}
+.r-stars span{color:var(--b-ink2);font-weight:600}
+
+/* welcome type a touch larger */
+.r-sheet .r-h{font-size:30px}
+.r-sheet .r-p{font-size:16.5px}
+
+/* choice rows — their vehicle chips, as rows */
+.r-opt{display:flex;align-items:center;gap:14px;width:100%;background:var(--b-surface);border:1.5px solid var(--b-line);border-radius:var(--b-radius);padding:12px 16px;cursor:pointer;text-align:left;font-family:var(--b-font);color:var(--b-ink);box-shadow:0 1px 2px rgba(0,0,0,.04);flex:none}
+.r-opt svg{flex:none;width:28px;height:28px;stroke:var(--b-ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.r-opt b{display:block;font-size:17px;font-weight:800}
+.r-opt small{display:block;font-size:13.5px;font-weight:500;color:var(--b-ink2);margin-top:1px}
+.r-opt.on{background:var(--b-primary);border-color:var(--b-primary);color:var(--b-primary-ink)}
+.r-opt.on svg{stroke:var(--b-primary-ink)}
+.r-opt.on small{color:rgba(255,255,255,.78)}
+
+/* question screens — their quiz UI */
+.r-qh{background:var(--b-slate);color:var(--b-surface);padding:60px 18px 16px;display:flex;justify-content:space-between;align-items:center;font:700 16px var(--b-font);flex:none}
+.r-qh b{font-size:14.5px;font-weight:700}
+.r-qb{background:var(--b-qbg);padding:18px 22px 10px;text-align:center;flex:none}
+.r-qt{font:500 17px/1.4 var(--b-font);color:var(--b-slate);margin:0 0 14px}
+.r-qimg{width:100%;display:block}
+.r-mark{font:800 11.5px var(--b-font);letter-spacing:.03em;color:var(--b-blue);margin:12px 0 0}
+.r-ans{background:var(--b-surface);flex:1;display:flex;flex-direction:column;min-height:0}
+.r-a{display:flex;align-items:center;gap:20px;background:var(--b-surface);border:0;border-bottom:1px solid var(--b-line);border-left:4px solid transparent;padding:13px 18px 13px 16px;text-align:left;font:500 15px/1.35 var(--b-font);color:var(--b-slate);cursor:pointer;width:100%}
+.r-a b{font-size:17px;font-weight:800;width:14px;flex:none}
+.r-a.r-ok,.r-sg.r-ok{background:rgba(56,193,114,.13);border-left-color:var(--b-ok)}
+.r-a.r-bad,.r-sg.r-bad{background:rgba(227,52,47,.1);border-left-color:var(--b-bad)}
+.r-ex{display:none;padding:10px 18px 12px;font:600 13.5px/1.4 var(--b-font);color:var(--b-slate);background:var(--b-surface);margin:0}
+.r-done .r-ex{display:block}
+.r-done .r-a{padding-top:9px;padding-bottom:9px}
+.r-qimg{max-height:24vh;object-fit:cover}
+.r-verdict{font-weight:900}
+.r-verdict.r-g{color:var(--b-ok)}.r-verdict.r-r{color:var(--b-bad)}
+.r-qf{display:grid;grid-template-columns:62px 1fr 1fr 62px;height:76px;padding-bottom:14px;background:var(--b-qbg);font:800 13px var(--b-font);color:var(--b-slate);flex:none}
+.r-qf > *{display:flex;align-items:center;justify-content:center;gap:8px;border:0;background:none;font:inherit;color:inherit}
+.r-qf svg{width:19px;height:19px;stroke:var(--b-blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.r-qf .r-prev{background:var(--b-blue-lt);color:var(--b-blue);font-size:21px;cursor:pointer}
+.r-qf .r-next{background:var(--b-blue);color:var(--b-surface);font-size:21px;cursor:pointer}
+.r-qf .r-next:disabled{opacity:.4;cursor:default}
+.r-q2 .r-qb{flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:10px}
+.r-signs{display:grid;grid-template-columns:1fr 1fr;background:var(--b-surface);flex:none}
+.r-sg{position:relative;background:var(--b-surface);border:0;border-bottom:1px solid var(--b-line);border-left:4px solid transparent;display:grid;place-items:center;padding:26px 10px 12px;cursor:pointer;height:150px}
+.r-sg:nth-child(odd){border-right:1px solid var(--b-line)}
+.r-sg b{position:absolute;left:12px;top:8px;font:800 16px var(--b-font);color:var(--b-slate)}
+.r-sg img{height:104px;width:auto;max-width:90%}
+
+/* plan */
+.r-score{background:var(--b-surface);border-radius:var(--b-radius);padding:13px 16px;display:flex;gap:14px;align-items:center;font:600 14.5px/1.4 var(--b-font);color:var(--b-ink2);border:1px solid var(--b-line);flex:none}
+.r-score strong{font:900 28px var(--b-font);color:var(--b-teal);flex:none;letter-spacing:-.02em}
+.r-score b{color:var(--b-ink)}
+.r-card{display:flex;gap:14px;align-items:center;background:var(--b-surface);border:1px solid var(--b-line);border-radius:var(--b-radius);padding:9px 14px 9px 9px;flex:none}
+.r-card img{width:58px;height:55px;border-radius:10px;flex:none}
+.r-card b{display:block;font:800 16.5px var(--b-font);color:var(--b-ink)}
+.r-card span{display:block;font:600 13.5px/1.35 var(--b-font);color:var(--b-ink2);margin-top:1px}
+
+/* price sized to the test date */
+.r-tl{list-style:none;margin:6px 0 0;padding:0}
+.r-tl li{position:relative;padding:0 0 18px 46px}
+.r-tl li::before{content:"";position:absolute;left:14px;top:30px;bottom:2px;width:3px;border-radius:2px;background:var(--b-line)}
+.r-tl li:last-child::before{display:none}
+.r-tl i{position:absolute;left:0;top:0;width:31px;height:31px;border-radius:50%;background:var(--b-teal);display:grid;place-items:center}
+.r-tl i svg{width:16px;height:16px;stroke:var(--b-surface);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.r-tl li.r-o i{background:var(--b-orange)}
+.r-tl b{display:block;font:800 16px/1.3 var(--b-font);color:var(--b-ink);padding-top:4px}
+.r-tl span{display:block;font:500 14px/1.4 var(--b-font);color:var(--b-ink2);margin-top:2px}
+.r-price{background:var(--b-surface);border:2px solid var(--b-primary);border-radius:var(--b-radius);padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex:none}
+.r-price b{display:block;font:900 21px var(--b-font);color:var(--b-ink);white-space:nowrap}
+.r-price span{font:600 13px/1.35 var(--b-font);color:var(--b-ink2);text-align:right}
+
+/* paywall */
+.r-pwtop{background:var(--b-orange);padding:56px 20px 40px;display:flex;justify-content:center;position:relative;overflow:hidden;flex:none}
+.r-pwtop::after{content:"";position:absolute;left:-20%;right:-20%;bottom:-74px;height:100px;background:var(--b-teal);transform:rotate(-7deg)}
+.r-pwtop img{width:150px;height:auto;position:relative;z-index:1}
+.s-x{position:absolute;top:58px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.2);border:0;color:var(--b-surface);font:700 15px var(--b-font);cursor:pointer;z-index:4}
+.r-pw{flex:1;background:var(--b-bg);border-radius:22px 22px 0 0;margin-top:-22px;padding:20px 20px 22px;display:flex;flex-direction:column;gap:11px;position:relative;z-index:2;min-height:0}
+.r-pw .r-h{font-size:24px;text-align:center}
+.r-proofs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:none}
+.r-pf{background:var(--b-surface);border-radius:12px;padding:9px 4px;text-align:center;border:1px solid var(--b-line)}
+.r-pf b{display:block;font:900 19px var(--b-font);color:var(--b-ink)}
+.r-pf b i{font-style:normal;color:var(--b-orange)}
+.r-pf span{display:block;font:600 11.5px/1.25 var(--b-font);color:var(--b-ink2);margin-top:2px}
+.r-ticks{list-style:none;margin:0;padding:0 4px;display:grid;gap:7px;flex:none}
+.r-ticks li{display:flex;gap:10px;align-items:center;font:700 14.5px var(--b-font);color:var(--b-ink)}
+.r-ticks svg{width:20px;height:20px;flex:none;stroke:var(--b-teal);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.r-quote{font:600 13.5px/1.4 var(--b-font);color:var(--b-ink2);border-left:3px solid var(--b-orange);padding:1px 0 1px 10px;margin:0;flex:none}
+.r-quote i{font-style:normal;color:var(--b-orange);letter-spacing:1px}
+.r-legal{display:flex;justify-content:center;gap:18px;font:600 12px var(--b-font);color:var(--b-ink2);margin-top:-2px}
+
+/* price + button sit together at the bottom */
+.r-pw .r-price,.r-body .r-price{margin-top:auto}
+.r-pw .r-price + .r-cta,.r-body .r-price + .r-cta{margin-top:0}
+
+/* offer on close */
+.r-offer{flex:1;display:flex;flex-direction:column;padding:60px 22px 26px;gap:13px;background:var(--b-bg);border-radius:22px 22px 0 0}
+.r-ban{align-self:flex-start;background:var(--b-teal);color:var(--b-surface);font:900 26px/1.15 var(--b-font);padding:12px 18px 13px;transform:rotate(-2deg);box-shadow:6px 6px 0 rgba(0,0,0,.85);margin:22px 0 10px 4px}
+.r-skip{background:none;border:0;font:700 14.5px var(--b-font);color:var(--b-ink2);cursor:pointer;padding:2px;flex:none}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· Driving Theory Test Kit</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">Driving Theory<br>Test Kit</h1>
+    <p class="au-lede">Five ideas to turn more learner drivers into subscribers. <span>Each one built into your own theory test kit, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the Driving Theory Test Kit team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at Driving Theory Test Kit.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at Driving Theory Test Kit. We took <b>your own screens, copy and prices</b> from your App Store listing and site, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is Driving Theory Test Kit’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your live flow or your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: the first minute, the price beside your proof, and what happens when a learner says not yet.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Orange numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — RAC Driving Theory Test Kit. Flow: welcome → vehicle → date → q1 → q2 → plan → cover → paywall → (✕) offer -->
+
+<section class="scr" data-id="welcome">
+  <div class="r-hero s-pad">
+    <img class="r-logo" src="assets/brand/logo-1.png" alt="Driving Theory Test Kit from the RAC">
+    <div class="r-tiles"><img src="assets/crop/ic-practise.png" alt=""><img src="assets/crop/ic-mock.png" alt=""><img src="assets/crop/ic-signs.png" alt=""><img src="assets/crop/ic-highway.png" alt=""></div>
+  </div>
+  <div class="r-sheet">
+    <h1 class="r-h">Pass your theory test first time</h1>
+    <p class="r-p">Join over 4 million users practising every DVSA licensed question, hazard clip and mock exam.</p>
+    <div class="r-stars"><i>★★★★★</i>4.7 <span>· 100K+ ratings · from the RAC</span></div>
+    <button class="r-cta" data-go="vehicle">Get started</button>
+  </div>
+</section>
+
+<section class="scr" data-id="vehicle">
+  <div class="r-body s-pad">
+    <div class="r-bar"><button class="r-back" data-back aria-label="Back">‹</button><div class="r-prog"><i style="width:25%"></i></div></div>
+    <h1 class="r-h">Choose your vehicle:</h1>
+    <p class="r-p">We’ll load the right DVSA questions and hazard clips.</p>
+    <button class="r-opt" data-pick="veh:car" data-advance="date"><svg viewBox="0 0 24 24"><path d="M3.5 16v-3.2L5.8 7.5h12.4l2.3 5.3V16z"/><path d="M3.5 12.8h17"/><path d="M6 16v2.2M18 16v2.2"/></svg><div><b>Car</b><small>Car theory test</small></div></button>
+    <button class="r-opt" data-pick="veh:bike" data-advance="date"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="15.5" r="3.5"/><circle cx="18.5" cy="15.5" r="3.5"/><path d="M5.5 15.5l4-6h5l4 6M14.5 9.5l1-3h2.5M9 9.5H6.5"/></svg><div><b>Bike</b><small>Motorcycle theory test</small></div></button>
+    <button class="r-opt" data-pick="veh:lgv" data-advance="date"><svg viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l3 4v3h-7z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg><div><b>LGV / HGV</b><small>Lorry and truck</small></div></button>
+    <button class="r-opt" data-pick="veh:pcv" data-advance="date"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M3 11h18M9 5v6M15 5v6"/><circle cx="7" cy="18.5" r="1.3"/><circle cx="17" cy="18.5" r="1.3"/></svg><div><b>PCV</b><small>Bus and coach</small></div></button>
+    <button class="r-opt" data-pick="veh:adi" data-advance="date"><svg viewBox="0 0 24 24"><path d="M2 9l10-4 10 4-10 4z"/><path d="M6 11v4c0 1.5 3 3 6 3s6-1.5 6-3v-4M22 9v5"/></svg><div><b>ADI</b><small>Approved driving instructor</small></div></button>
+  </div>
+</section>
+
+<section class="scr" data-id="date">
+  <div class="r-body s-pad">
+    <div class="r-bar"><button class="r-back" data-back aria-label="Back">‹</button><div class="r-prog"><i style="width:50%"></i></div></div>
+    <h1 class="r-h">When is your theory test?</h1>
+    <p class="r-p">We’ll pace your revision so you’re ready on the day.</p>
+    <button class="r-opt" data-pick="when:2w" data-advance="q1"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><div><b>In the next 2 weeks</b><small>Booked</small></div></button>
+    <button class="r-opt" data-pick="when:4w" data-advance="q1"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><div><b>In 2 to 4 weeks</b><small>Booked</small></div></button>
+    <button class="r-opt" data-pick="when:3m" data-advance="q1"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><div><b>In 1 to 3 months</b><small>Booked</small></div></button>
+    <button class="r-opt" data-pick="when:no" data-advance="q1"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><div><b>Not booked yet</b><small>We’ll tell you when you’re ready</small></div></button>
+  </div>
+</section>
+
+<section class="scr" data-id="q1">
+  <div class="r-qh s-pad"><span>Exit</span><b>Alertness</b><span>1 of 2</span></div>
+  <div class="r-qb">
+    <p class="r-qt">Why are these yellow lines painted across the road?</p>
+    <img class="r-qimg" src="assets/crop/q1-photo.png" alt="Yellow lines painted across a road on the approach to a roundabout">
+    <p class="r-mark">MARK ONE ANSWER</p>
+  </div>
+  <div class="r-ans">
+    <button class="r-a" data-pick="q1:a"><b>A</b><span>To help you choose the correct lane</span></button>
+    <button class="r-a" data-pick="q1:b"><b>B</b><span>To help you keep the correct separation distance</span></button>
+    <button class="r-a" data-pick="q1:c"><b>C</b><span>To make you aware of your speed</span></button>
+    <button class="r-a" data-pick="q1:d"><b>D</b><span>To tell you the distance to the roundabout</span></button>
+    <p class="r-ex"><span class="r-verdict"></span> These lines are painted on the approach to roundabouts to make you aware of your speed.</p>
+  </div>
+  <div class="r-qf"><button class="r-prev" data-back aria-label="Previous">←</button><span><svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2 4 2 4H6"/></svg>FLAG</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5v.7M12 17h.01"/></svg>EXPLAIN</span><button class="r-next" data-go="q2" aria-label="Next">→</button></div>
+</section>
+
+<section class="scr r-q2" data-id="q2">
+  <div class="r-qh s-pad"><span>Exit</span><b>Road Signs</b><span>2 of 2</span></div>
+  <div class="r-qb">
+    <p class="r-qt">Which sign shows a one-way street?</p>
+    <p class="r-mark">MARK ONE ANSWER</p>
+  </div>
+  <div class="r-signs">
+    <button class="r-sg" data-pick="q2:a"><b>A</b><img src="assets/crop/sign-a.png" alt="No entry sign"></button>
+    <button class="r-sg" data-pick="q2:b"><b>B</b><img src="assets/crop/sign-b.png" alt="Blue rectangle with a white arrow pointing up"></button>
+    <button class="r-sg" data-pick="q2:c"><b>C</b><img src="assets/crop/sign-c.png" alt="Two-way traffic warning sign"></button>
+    <button class="r-sg" data-pick="q2:d"><b>D</b><img src="assets/crop/sign-d.png" alt="Ahead only sign"></button>
+  </div>
+  <p class="r-ex"><span class="r-verdict"></span> Rectangular blue signs give information. This one means one-way traffic.</p>
+  <div class="r-qf"><button class="r-prev" data-back aria-label="Previous">←</button><span><svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2 4 2 4H6"/></svg>FLAG</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5v.7M12 17h.01"/></svg>EXPLAIN</span><button class="r-next" data-go="plan" aria-label="Next">→</button></div>
+</section>
+
+<section class="scr" data-id="plan">
+  <div class="r-body s-pad">
+    <p class="r-kick" style="margin-top:8px">Your personalised learning plan</p>
+    <h1 class="r-h" id="rPlanH">Your plan to pass by Tue 3 Nov</h1>
+    <div class="r-score" id="rScore"></div>
+    <div class="r-card"><img src="assets/crop/ic-practise.png" alt=""><div><b id="rPractise">28 questions a day</b><span id="rPractiseS">All 770+ DVSA questions once before test day</span></div></div>
+    <div class="r-card"><img src="assets/crop/ic-mock.png" alt=""><div><b id="rMock">A mock exam every week</b><span id="rMockS">Aim for 43 out of 50 before test day</span></div></div>
+    <div class="r-card"><img src="assets/crop/ic-signs.png" alt=""><div><b id="rSigns">6 road signs a day</b><span>All 150+ UK road signs, with a quiz</span></div></div>
+    <button class="r-cta" data-go="cover">Start my plan</button>
+  </div>
+</section>
+
+<section class="scr" data-id="cover">
+  <div class="r-body s-pad">
+    <div class="r-bar"><button class="r-back" data-back aria-label="Back">‹</button><div class="r-prog"><i style="width:90%"></i></div></div>
+    <h1 class="r-h" id="rCoverH">Your test is in 4 weeks. One month covers it.</h1>
+    <ol class="r-tl">
+      <li><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0"/></svg></i><b>Today</b><span>Unlock all 770+ questions, 36 hazard clips and unlimited mock exams.</span></li>
+      <li class="r-o"><i><svg viewBox="0 0 24 24"><path d="M4 21V5h11l-2 4 2 4H4"/></svg></i><b id="rCoverD">Tue 3 Nov</b><span id="rCoverDS">Your theory test</span></li>
+      <li><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><b>After you pass</b><span>Cancel in two taps. We’ll remind you the day after your test.</span></li>
+    </ol>
+    <div class="r-price"><b>£4.99 a month</b><span>Under 17p a day<br>Cancel any time</span></div>
+    <button class="r-cta" data-go="paywall">Continue</button>
+  </div>
+</section>
+
+<section class="scr" data-id="paywall">
+  <button class="s-x" data-go="offer" aria-label="Close">✕</button>
+  <div class="r-pwtop s-pad"><img src="assets/brand/logo-1.png" alt="Driving Theory Test Kit from the RAC"></div>
+  <div class="r-pw">
+    <h1 class="r-h">Pass your <span data-bind="label:veh"></span> theory test first time</h1>
+    <div class="r-proofs">
+      <div class="r-pf"><b>4.7<i>★</i></b><span>100K+ UK ratings</span></div>
+      <div class="r-pf"><b>4M+</b><span>learners have prepared with us</span></div>
+      <div class="r-pf"><b>DVSA</b><span>licensed questions</span></div>
+    </div>
+    <ul class="r-ticks">
+      <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Every DVSA question, answer and explanation</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All 36 hazard perception clips</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Unlimited mock exams, works offline</li>
+      <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>35 Theory Tutor videos from the RAC</li>
+    </ul>
+    <p class="r-quote"><i>★★★★★</i> “I was able to pass my theory test first time.” Google Play review</p>
+    <div class="r-price"><b>£4.99 a month</b><span>Under 17p a day<br>Cancel any time</span></div>
+    <button class="r-cta" data-go="offer"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>Unlock all questions</button>
+    <div class="r-legal"><span>Terms</span><span>Privacy</span><span>Restore</span></div>
+  </div>
+</section>
+
+<section class="scr sheet" data-id="offer">
+  <button class="s-x" data-go="paywall" aria-label="Close" style="background:rgba(0,0,0,.08);color:var(--b-ink)">✕</button>
+  <div class="r-offer s-pad">
+    <div class="r-ban">Try it free<br>for 3 days</div>
+    <p class="r-p">Not ready for £4.99 yet? Get every question, hazard clip and mock exam free for 3 days.</p>
+    <ol class="r-tl">
+      <li><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg></i><b>Today</b><span>Full access: all questions, clips and mocks.</span></li>
+      <li><i><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></i><b>Day 2</b><span>We remind you before your free days end.</span></li>
+      <li class="r-o"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><b>Day 3</b><span>£4.99 a month starts. Cancel any time before.</span></li>
+    </ol>
+    <button class="r-cta">Start my 3 free days</button>
+    <p class="r-fine">Then £4.99 a month · cancel any time</p>
+    <button class="r-skip" >No thanks, keep the free questions</button>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Close the paywall with ✕ to see idea 5. Change the test date to see the plan and price follow.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· Driving Theory Test Kit</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "Driving Theory Test Kit",
+ "state": {
+  "veh": "car",
+  "when": "4w",
+  "q1": "",
+  "q2": "",
+  "plan": "month"
+ },
+ "labels": {
+  "veh": {
+   "car": "car",
+   "bike": "motorcycle",
+   "lgv": "LGV / HGV",
+   "pcv": "PCV",
+   "adi": "ADI"
+  },
+  "when": {
+   "2w": "in the next 2 weeks",
+   "4w": "in 2 to 4 weeks",
+   "3m": "in 1 to 3 months",
+   "no": "not booked yet"
+  }
+ },
+ "chips": {
+  "welcome": "Welcome",
+  "vehicle": "Vehicle",
+  "date": "Test date",
+  "q1": "Question 1",
+  "q2": "Question 2",
+  "plan": "Your plan",
+  "cover": "Price",
+  "paywall": "Paywall",
+  "offer": "Offer"
+ },
+ "hero": [
+  "plan",
+  "paywall",
+  "q1"
+ ],
+ "outcome": {
+  "cr": "+20%"
+ },
+ "ideas": [
+  {
+   "screen": "plan",
+   "title": "Ask which test and when, then show their plan to test day",
+   "what": "Your store screens show the app opening onto <code>Choose your vehicle:</code> and a locked question bank. Ask two things first, which test and when it is, and turn 770+ questions into a daily target: 28 a day for a test in four weeks, plus a weekly mock against the 43 of 50 pass mark.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "q1",
+   "title": "Let them answer real questions before you ask for £4.99",
+   "what": "Put two of your own DVSA questions in the first minute, the yellow-lines question and the one-way sign from your listing, with your explanation after each. The score carries into the plan, so the paywall arrives right after a quick win.",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "paywall",
+   "title": "Put your proof where people decide to pay",
+   "what": "4.7★ from 100,746 UK ratings, over 4 million users, DVSA licensed and the RAC name. A learner weighing £4.99 a month against free revision sites needs that proof beside the price, not only on the store page.",
+   "impact": "+5–10%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "cover",
+   "title": "Size the price to their test date",
+   "what": "Public Play reviews call £4.99 a month a lot for a student, and some learners say they kept paying after they passed. Say plainly that one month covers a test in four weeks, that it’s under 17p a day, and that you’ll remind them to cancel once they pass.",
+   "impact": "+5–10%",
+   "il": "CR to purchase, fewer refund requests"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "Whoever taps ✕ today leaves with only the free sample. Offer the same £4.99 monthly plan with 3 free days and a reminder before it ends: a real second offer on a real product, not a fake discount.",
+   "impact": "+3–8%",
+   "il": "CR to purchase, from people who close the paywall"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "One screen before the questions",
+   "why": "Your store screens show the app opening onto Choose your vehicle. This adds your logo, rating and 4 million users before the first question."
+  },
+  "vehicle": {
+   "idea": 0,
+   "t": "Which test",
+   "why": "Your own vehicle choice, asked first. It picks the question bank and names the paywall headline. Sets up idea 1."
+  },
+  "date": {
+   "idea": 0,
+   "t": "When is the test",
+   "why": "One question that turns 770+ questions into a daily target (idea 1) and sizes the price to the test date (idea 4)."
+  },
+  "q1": {
+   "idea": 2,
+   "t": "Real questions before the paywall",
+   "why": "<b>Try</b> two of your own DVSA questions in the first minute, with your explanation after each, <b>because</b> a learner who has just answered one knows what the full bank is worth, and a quick win comes right before you ask for £4.99.",
+   "iv": "CR +5–15%",
+   "il": "to purchase"
+  },
+  "q2": {
+   "idea": 0,
+   "t": "Second question",
+   "why": "Your road-sign quiz, as it is today. The score from both questions carries into the plan."
+  },
+  "plan": {
+   "idea": 1,
+   "t": "Show them their plan to test day",
+   "why": "<b>Try</b> turning the vehicle and test date into a daily plan, 28 questions a day for a test in four weeks, <b>because</b> a learner with a booked date is buying a route to a pass, not a question bank.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": "Change the test date or vehicle to see the plan, the headline and the price screen follow."
+  },
+  "cover": {
+   "idea": 4,
+   "t": "Size the price to their test date",
+   "why": "<b>Try</b> saying one month covers their test and that you’ll remind them to cancel once they pass, <b>because</b> Play reviews show learners balk at £4.99 a month and resent paying after they’ve passed.",
+   "iv": "CR +5–10%",
+   "il": "to purchase, with fewer refund requests"
+  },
+  "paywall": {
+   "idea": 3,
+   "t": "Put your proof where people pay",
+   "why": "<b>Try</b> 4.7★ from 100K+ UK ratings, 4 million users, DVSA licensed and the RAC name right beside the price, <b>because</b> a learner deciding on £4.99 a month trusts the RAC and 100,000 reviews more than a feature list.",
+   "iv": "CR +5–10%",
+   "il": "to purchase",
+   "also": "Also here: the headline names their vehicle (idea 1) and the price reads per day (idea 4)."
+  },
+  "offer": {
+   "idea": 5,
+   "t": "Catch the people who close the paywall",
+   "why": "<b>Try</b> 3 free days on the same £4.99 monthly plan when someone taps ✕, <b>because</b> today they leave with only the free sample, and a trial with a reminder is an honest second offer.",
+   "iv": "CR +3–8%",
+   "il": "to purchase, from people who close the paywall"
+  }
+ },
+ "langs": [],
+ "i18n": {},
+ "prices": {},
+ "labelsI18n": {},
+ "liveUrl": "https://eddieatadapty.github.io/rac-theory-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": null,
+ "tour": {
+  "introLede": "Five ideas to turn more learner drivers into subscribers.",
+  "endTitle": "Five ideas, built into your own theory test kit.",
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3200,
+    "tap": [
+     ".r-cta",
+     2650
+    ]
+   },
+   {
+    "id": "vehicle",
+    "d": 2100,
+    "tap": [
+     "[data-pick=\"veh:car\"]",
+     1450
+    ]
+   },
+   {
+    "id": "date",
+    "d": 2100,
+    "st": {
+     "veh": "car"
+    },
+    "tap": [
+     "[data-pick=\"when:4w\"]",
+     1450
+    ]
+   },
+   {
+    "id": "q1",
+    "d": 1900,
+    "st": {
+     "when": "4w"
+    },
+    "tap": [
+     "[data-pick=\"q1:c\"]",
+     1350
+    ]
+   },
+   {
+    "id": "q1",
+    "d": 2000,
+    "st": {
+     "q1": "c"
+    },
+    "tap": [
+     ".r-next",
+     1500
+    ]
+   },
+   {
+    "id": "q2",
+    "d": 1800,
+    "tap": [
+     "[data-pick=\"q2:b\"]",
+     1250
+    ]
+   },
+   {
+    "id": "q2",
+    "d": 1400,
+    "st": {
+     "q2": "b"
+    },
+    "tap": [
+     ".r-next",
+     950
+    ]
+   },
+   {
+    "id": "plan",
+    "d": 3100,
+    "pop": ".r-score",
+    "tap": [
+     ".r-cta",
+     2650
+    ]
+   },
+   {
+    "id": "cover",
+    "d": 3000,
+    "reveal": ".r-price",
+    "tap": [
+     ".r-cta",
+     2550
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3400,
+    "pop": ".r-proofs",
+    "tap": [
+     ".s-x",
+     2950
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 3300,
+    "pop": ".r-ban",
+    "tap": [
+     ".r-cta",
+     2850
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 2600,
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "One screen before the questions",
+    "l": "Your logo, rating and 4 million users first."
+   },
+   "vehicle": {
+    "k": "Context",
+    "t": "Which test",
+    "l": "Your own vehicle choice, asked up front."
+   },
+   "date": {
+    "k": "Context",
+    "t": "When is the test",
+    "l": "One answer sizes the plan and the price."
+   },
+   "q1": {
+    "n": 2,
+    "t": "Real questions first",
+    "l": "Two of your DVSA questions in the first minute.",
+    "o": "+5–15%",
+    "ol": "CR to purchase"
+   },
+   "q2": {
+    "k": "Context",
+    "t": "Your road-sign quiz",
+    "l": "The score carries into the plan."
+   },
+   "plan": {
+    "n": 1,
+    "t": "Their plan to test day",
+    "l": "28 questions a day for a test in four weeks.",
+    "o": "+10–20%",
+    "ol": "CR to purchase"
+   },
+   "cover": {
+    "n": 4,
+    "t": "Price sized to the test",
+    "l": "One month covers it. We remind you to cancel.",
+    "o": "+5–10%",
+    "ol": "CR to purchase"
+   },
+   "paywall": {
+    "n": 3,
+    "t": "Proof beside the price",
+    "l": "4.7★, 4 million users, DVSA licensed, the RAC.",
+    "o": "+5–10%",
+    "ol": "CR to purchase"
+   },
+   "offer": {
+    "n": 5,
+    "t": "Catch who closes",
+    "l": "3 free days on the same £4.99 plan.",
+    "o": "+3–8%",
+    "ol": "CR to purchase"
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for Driving Theory Test Kit. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "£4.99 a month",
+     "dd": "UK App Store listing, In-App Purchases: three “DVSA licensed Driving Theory” items at £4.99 (6 Oct 2026). Public Google Play reviews describe it as “£4.99 a month”."
+    },
+    {
+     "dt": "Under 17p a day",
+     "dd": "£4.99 ÷ 30 days = 16.6p."
+    },
+    {
+     "dt": "3 free days (offer on close)",
+     "dd": "Proposed: an introductory offer on the same £4.99 monthly product. Not a current offer; the length is yours to set."
+    },
+    {
+     "dt": "Not used",
+     "dd": "“Hazard perception test 2023” at £0.99 (legacy one-off); the Google Play range “£1.99 – £17.99” (durations not public)."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.7★ · 100K+ ratings",
+     "dd": "UK App Store listing: 4.73 from 100,746 ratings (6 Oct 2026)."
+    },
+    {
+     "dt": "Over 4 million users",
+     "dd": "App Store description: “Join over 4 million users”. Not used: “3 million users” on App Store screenshot 1 (older figure)."
+    },
+    {
+     "dt": "“I was able to pass my theory test first time.”",
+     "dd": "Public 5★ review on your Google Play listing."
+    },
+    {
+     "dt": "43 of 50 to pass",
+     "dd": "GOV.UK: the car theory test has 50 multiple-choice questions and a pass mark of 43."
+    },
+    {
+     "dt": "Not used",
+     "dd": "“Over 98% of learners pass their Theory Test on the first try” (uk-driving-theory.co.uk). Strong, but we’d want your source before putting it on a paywall."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "770+ questions, 36 hazard clips, 35 Theory Tutor videos, 150+ road signs, works offline",
+     "dd": "App Store description."
+    },
+    {
+     "dt": "“Choose your vehicle:”, Car / Bike / ADI / PCV, “Unlock all questions”",
+     "dd": "App Store screenshot 1, verbatim. LGV / HGV added from the description."
+    },
+    {
+     "dt": "Both questions and their answers",
+     "dd": "App Store screenshots 3 (Alertness) and 7 (Road sign quiz), verbatim. The one-line explanations are ours."
+    },
+    {
+     "dt": "Plan numbers",
+     "dd": "770 questions ÷ days to the test (28 a day for four weeks); 150 signs ÷ days to the test."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours",
+     "dd": "Sampled from your App Store screenshots: orange header #f85108, navy buttons #133d6a, teal #008883, ground #f2f7ff, question header #284c60, answer colours from your site."
+    },
+    {
+     "dt": "Type",
+     "dd": "Nunito (Google Fonts), the closest open family to your rounded app type."
+    },
+    {
+     "dt": "Logo, icons, photo, signs",
+     "dd": "Logo badge from uk-driving-theory.co.uk; menu icons, the yellow-lines photo and the four signs cut from App Store screenshots 1, 3 and 7."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your live onboarding and paywall",
+     "dd": "We didn’t walk the app, so this is built from your App Store listing and site. Every screen is a proposal, including the order."
+    },
+    {
+     "dt": "Your plan line-up",
+     "dd": "Whether the three £4.99 products differ (vehicle, length) and what the Android £17.99 product is."
+    },
+    {
+     "dt": "Your test history",
+     "dd": "If you’ve already run any of these, tell us and we’ll go deeper on the rest."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* per-app hooks: RAC Driving Theory Test Kit */
+var R_ANS = {q1: 'c', q2: 'b'};
+var R_DAYS = {'2w': 14, '4w': 28, '3m': 60, 'no': 42};
+var R_DARK = {welcome: 1, q1: 1, q2: 1, paywall: 1};       /* screens with a coloured header: white status bar */
+var R_TODAY = /[?&](shot|phone|tour|hero)\b/.test(location.search) ? new Date(2026, 9, 6) : new Date();
+function rD(days){ return new Date(R_TODAY.getTime() + days * 864e5).toLocaleDateString('en-GB', {weekday: 'short', day: 'numeric', month: 'short'}); }
+function rSet(id, h){ var e = document.getElementById(id); if (e) e.innerHTML = h; }
+function rSbar(id){ var b = document.querySelector('.sbar'); if (b) b.style.color = R_DARK[id] ? 'var(--b-surface)' : ''; }
+window.onSync = function(S){
+  ['q1', 'q2'].forEach(function(q){
+    var sc = scr[q], v = S[q], right = v === R_ANS[q];
+    if (!sc) return;
+    sc.classList.toggle('r-done', !!v);
+    sc.querySelectorAll('[data-pick^="' + q + ':"]').forEach(function(el){
+      var k = el.dataset.pick.split(':')[1];
+      el.classList.toggle('r-ok', !!v && k === R_ANS[q]);
+      el.classList.toggle('r-bad', !!v && k === v && !right);
+    });
+    sc.querySelector('.r-next').disabled = !v;
+    var vd = sc.querySelector('.r-verdict'); vd.textContent = right ? 'Correct!' : 'Not quite.'; vd.className = 'r-verdict ' + (right ? 'r-g' : 'r-r');
+  });
+  var days = R_DAYS[S.when] || 28, booked = S.when !== 'no', car = S.veh === 'car', mark = S.veh === 'car' || S.veh === 'bike';
+  var date = rD(days), weeks = Math.round(days / 7);
+  rSet('rPlanH', booked ? 'Your plan to pass by ' + date : 'Your 6-week plan to be test-ready');
+  var n = (S.q1 === R_ANS.q1) + (S.q2 === R_ANS.q2);
+  rSet('rScore', (S.q1 || S.q2)
+    ? '<strong>' + n + '/2</strong><div>You got <b>' + n + ' of 2</b> right. ' + (mark ? 'The real test needs <b>43 of 50</b>.' : 'Your plan builds you up to the pass mark.') + '</div>'
+    : '<strong>43/50</strong><div>' + (mark ? 'The pass mark on the real test. Your plan gets you there.' : 'Your plan builds you up to the pass mark.') + '</div>');
+  rSet('rPractise', car ? Math.ceil(770 / days) + ' questions a day' : 'A set of questions every day');
+  rSet('rPractiseS', car ? 'All 770+ DVSA questions once before test day' : 'Every DVSA question once before test day');
+  rSet('rMockS', mark ? 'Aim for 43 out of 50 before test day' : 'Aim for the pass mark before test day');
+  rSet('rSigns', Math.ceil(150 / days) + ' road signs a day');
+  rSet('rCoverH', {
+    '2w': 'Your test is in 2 weeks. One month covers it.',
+    '4w': 'Your test is in ' + weeks + ' weeks. One month covers it.',
+    '3m': 'Your test is in about 2 months. Two months cover it.',
+    'no': 'No date yet? Start now, book when you’re ready.'
+  }[S.when] || '');
+  rSet('rCoverD', booked ? date : 'When your mocks hit 43 of 50');
+  rSet('rCoverDS', booked ? 'Your theory test' : 'Book your test on GOV.UK');
+};
+window.onEnter = function(id, S){
+  if (HERO && !S.q1) { S.q1 = 'c'; S.q2 = 'b'; sync(); }                    /* hero stills: questions read as answered */
+  if ((id === 'q1' || id === 'q2') && !HERO && S[id]) { S[id] = ''; sync(); }   /* a question starts fresh every time */
+  rSbar(id);
+};
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+<script>
+/* per-app: keep the status bar colour right in ?tour frames (tourAt does not call onEnter) */
+if (window.tourAt) { var rTour = window.tourAt; window.tourAt = function(ms){ var i = rTour(ms); rSbar(cur); return i; }; rSbar(cur); }
+</script>
+</body>
+</html>
